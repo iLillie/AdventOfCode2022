@@ -8,19 +8,18 @@ pub struct CalorieCounting {
 
 impl CalorieCounting {
     pub fn init(&mut self) {
-        self.elf_total_calories =
-            CalorieCounting::get_total_elf_calories(fs::read_to_string(FILE_PATH).unwrap());
-        println!("Day 1:");
-        println!("  Calorie Counting");
+        let input = fs::read_to_string(FILE_PATH).unwrap();
+        self.elf_total_calories = CalorieCounting::get_total_elf_calories(input);
+        self.sort_descending();
+        self.print_stats();
     }
 
     pub fn get_highest_total(&mut self) {
-        let highest_calorie_count = self.elf_total_calories.iter().max();
-        println!("     Highest total: {:?}", highest_calorie_count.unwrap());
+        let highest_total = self.elf_total_calories[0];
+        println!("     Highest total: {:?}", highest_total);
     }
 
     pub fn get_top_three_highest_total(&mut self) {
-        self.sort_calories();
         let total_top_three: i64 = self.elf_total_calories[0..3].iter().sum();
         println!("     Top 3 highest total sum: {:?}", total_top_three);
     }
@@ -28,36 +27,40 @@ impl CalorieCounting {
     fn get_total_elf_calories(input: String) -> Vec<i64> {
         CalorieCounting::get_elf_calories(input)
             .iter()
-            .map(|elf_calorie| {
-                elf_calorie
-                    .lines()
-                    .map(|calorie| calorie.parse::<i64>().unwrap())
-                    .collect::<Vec<i64>>()
-                    .iter()
-                    .sum()
-            })
+            .map(|elf_calories| CalorieCounting::to_total_calorie(elf_calories))
             .collect::<Vec<i64>>()
     }
 
     fn get_elf_calories(input: String) -> Vec<String> {
         input
-            .split("\n\n")
-            .map(|input| input.to_string())
-            .collect::<Vec<String>>()
+        .split("\n\n")
+        .map(|input| input.to_string())
+        .collect::<Vec<String>>()
     }
 
-    fn sort_calories(&mut self) {
+    fn to_total_calorie(calories: &String) -> i64 {
+        calories
+        .lines()
+        .map(|calorie| calorie.parse::<i64>().unwrap())
+        .collect::<Vec<i64>>()
+        .iter()
+        .sum()
+    }
+
+    fn sort_descending(&mut self) {
         self.elf_total_calories.sort_by(|a, b| b.cmp(a))
     }
 
-    pub fn print_stats(&mut self) {
+    fn print_stats(&mut self) {
+        println!("Day 1:");
+        println!("  Calorie Counting");
         println!(
-            "     Total entries: {:?}",
-            self.elf_total_calories.iter().count()
+                "     Total entries: {:?}",
+        self.elf_total_calories.iter().count()
         );
         println!(
-            "     Lowest total: {:?}",
-            self.elf_total_calories.iter().min().unwrap()
+                "     Lowest total: {:?}",
+        self.elf_total_calories.iter().min().unwrap()
         );
     }
 }
