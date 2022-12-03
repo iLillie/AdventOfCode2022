@@ -1,8 +1,11 @@
 mod day_1;
+mod day_2;
 use day_1::CalorieCounting;
+use day_2::RockPaperScissors;
 
 fn main() {
-    run_day_one();
+    //run_day_one();
+    run_day_two()
 }
 
 fn run_day_one() {
@@ -14,4 +17,10 @@ fn run_day_one() {
 
     // Part 2
     calorie_counting.get_top_three_highest_total();
+}
+
+fn run_day_two() {
+    let mut rock_paper_scissors = RockPaperScissors::default();
+    rock_paper_scissors.init();
+    rock_paper_scissors.get_player_score()
 }
