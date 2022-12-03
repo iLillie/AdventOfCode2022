@@ -22,5 +22,11 @@ fn run_day_one() {
 fn run_day_two() {
     let mut rock_paper_scissors = RockPaperScissors::default();
     rock_paper_scissors.init();
-    rock_paper_scissors.get_player_score()
+    let part_one_score = rock_paper_scissors.clone().get_player_score();
+    println!("    Part 1 score: {:?}", part_one_score);
+
+    rock_paper_scissors.recalculate_player_moves();
+    let part_two_score = rock_paper_scissors.clone().get_player_score();
+    println!("    Part 2 score: {:?}", part_two_score);
+
 }

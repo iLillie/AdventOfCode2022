@@ -39,6 +39,37 @@ impl Hand {
         rock_win || paper_win || scissors_win
     }
 
+    fn get_lose_shape(self, opponent: &Hand) -> Hand {
+        match opponent {
+            Hand::Rock => return Hand::Scissors,
+            Hand::Paper => return Hand::Rock,
+            Hand::Scissors => return Hand::Paper,
+            Hand::Unknown => return Hand::Unknown,
+        }
+    }
+
+    fn get_win_shape(self, opponent: &Hand) -> Hand {
+        match opponent {
+            Hand::Rock => return Hand::Paper,
+            Hand::Paper => return Hand::Scissors,
+            Hand::Scissors => return Hand::Rock,
+            Hand::Unknown => return Hand::Unknown,
+        }
+    }
+
+    fn get_draw_shape(self, opponent: &Hand) -> Hand {
+        opponent.clone()
+    }
+
+    fn recalculate_shape(self, opponent: &Hand) -> Hand {
+        match self {
+            Hand::Rock => return self.get_lose_shape(opponent),
+            Hand::Paper => return self.get_draw_shape(opponent),
+            Hand::Scissors => return self.get_win_shape(opponent),
+            Hand::Unknown => return Hand::Unknown,
+        }
+    }
+
     fn get_score(self) -> i64 {
         match self {
             Self::Rock => return 1,
@@ -68,6 +99,13 @@ impl RockPaperScissors {
     pub fn init(&mut self) {
         let input = fs::read_to_string(FILE_PATH).unwrap();
         self.moves_from_str(input);
+        self.print_stats()
+    }
+
+    fn print_stats(&mut self) {
+        println!("Day 2:");
+        println!("  Rock Paper Scissors");
+        println!("    Moves: {:?}", self.player_moves.clone().iter().count());
     }
 
     fn moves_from_str(&mut self, input: String) {
@@ -81,11 +119,21 @@ impl RockPaperScissors {
             .collect::<Vec<Hand>>();
     }
 
-    pub fn get_player_score(self) {
+    pub fn recalculate_player_moves(&mut self) {
+        self.player_moves = self
+            .player_moves
+            .clone()
+            .into_iter()
+            .zip(self.opponent_moves.clone())
+            .map(|(player, opponent)| player.recalculate_shape(&opponent))
+            .collect::<Vec<Hand>>()
+    }
+
+    pub fn get_player_score(self) -> i64 {
         let result_score = self.clone().get_result_score();
         let total_shape_score = self.get_total_shape_score();
         let total = result_score + total_shape_score;
-        println!("Total score: {:?}", total);
+        total
     }
 
     fn get_total_shape_score(self) -> i64 {
@@ -112,7 +160,7 @@ impl Default for RockPaperScissors {
     fn default() -> Self {
         Self {
             player_moves: vec![],
-            opponent_moves: vec![]
+            opponent_moves: vec![],
         }
     }
 }
