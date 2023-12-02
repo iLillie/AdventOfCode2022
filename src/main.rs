@@ -1,14 +1,18 @@
 mod day_1;
 mod day_2;
 mod day_3;
+mod day_1_2023;
 use day_1::CalorieCounting;
 use day_2::RockPaperScissors;
 use day_3::RucksackReorganization;
 
+use crate::day_1_2023::Trebuchet;
+
 fn main() {
     //run_day_one();
     //run_day_two();
-    run_day_three();
+    //run_day_three();
+    run_day_one_2023();
 }
 
 fn run_day_one() {
@@ -42,4 +46,11 @@ fn run_day_three() {
     println!("Day 3:");
     println!("  Part 1: {}", sum_of_duplicate);
     println!("  Part 2: {}", RucksackReorganization::solve_part2(rocksack_reorganization.rucksack_list));
+}
+
+fn run_day_one_2023() {
+    let mut threbucket = Trebuchet::default();
+    threbucket.init();
+    threbucket.part_1();
+    threbucket.part_2();
 }
